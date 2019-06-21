@@ -1,0 +1,141 @@
+show dbs
+
+
+use database_name
+
+show collections
+
+db.createCollection("users")     -------collection creation
+
+db.users.insert
+      ({firstName: "Praveen",
+	    lastName:"Appari",
+		email:"praveenkumar@gamil.com",
+		password: "123456",
+		type:"A",
+		creationDate: new Date(),
+		state:"Baden Wutenburg",
+		country:"Germany",
+		phoneNumber:"+491123456789"
+		})   
+		
+		
+db.users.insert
+      ({firstName: "Hari",
+	    lastName:"Sree",
+		email:"Hari@gmail.com",
+		password: "123456",
+		type:"U",
+		creationDate: new Date(),
+		state:"Hamburg",
+		country:"Germany",
+		phoneNumber:"+491123456770"
+		})   
+		
+		
+db.legalLaws.insert
+    ({legalSectionId: ObjectId(),
+	legalSectionIdm:"ArbZG",
+	legalSectionTitle:"Working Time Act",
+	legalSubSectionID: ObjectId(),legalSubSectionIdm:"1",
+	legalSubSectionTitle:"Purpose of the Law",
+	description:"Purpose of the law is to  1. to ensure the safety and health of workers in the Federal Republic of Germany and in the exclusive economic zone in the organization of working time and to improve the framework conditions for flexible working hours and           2. to protect the sunday the nationally recognized holidas has days of rest and mental gathering of workers",
+	referanceLink:"www.gesetze-im-internet.de/arbzg/__1.html",
+	createdDate: new Date(),
+	lawCreatedDate:"1994-06-19",
+	reason:"Safety and health for workers",
+	country:"Germany",
+	Active:"Yes"
+	})  
+	
+	
+	
+	
+db.legalLaws.find({legalSectionTitle: /Working/,}).pretty()   
+
+
+db.legalLaws.find({description:{$regex:/purpose/,$options: 'i'}}).pretty()
+
+
+
+db.threads.aggregate([   {
+     '$match': {       'type': 'T'     }   },
+	 {     '$lookup': {       'from': 'legalLaws',
+	 'localField': 'legalID',        'foreignField': '_id',        'as': 'lawinfo'     }   } ])  
+	 
+	 
+	 
+ 
+first use case
+
+db.threads.aggregate
+([{     $match: {         title: {             $regex: /addi/         }     } },
+ {     $lookup: {         from: 'legalLaws',
+                          localField: 'legalID',
+						  foreignField: '_id',
+						  as: 'working hours'     } }]).pretty()        
+
+db.threads.aggregate([{     $match: {         title: {             $regex: /addi/         }     } }, {     $lookup: {         from: 'legalLaws',         localField: 'legalID',         foreignField: '_id',         as: '<<string>>'     } }]).pretty()
+
+
+
+db.legalLaws.aggregate([{   $match: {      legalSectionTitle: {  $regex: /Working Time/}  }  }, { $lookup: {from: 'threads', localField: '_id', foreignField: 'legalID',     as: '<<string>>'   }}])
+
+
+
+
+
+
+
+second use case
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+db.threads.aggregate([{
+    $match: {
+        title: {
+            $regex: /temporary employment/
+        }
+    }
+}]).pretty()
+
+
+db.threads.update({_id:ObjectId("5d01b17289509535e09592d6")},{$push:{comments:{_id: ObjectId(),desc:"thanks for information"}}})  
+
+
+third use case
+
+
+db.legalLaws.insert({"legalSectionIdm":"ArbZG1","legalSectionTitle":"Law regulating a general minimum wage","legalSubSectionID":"7","legalSubSectionIdm":"7","legalSubSectionTitle":["fixing the general minimum wage","minimum wage"],"description":"(1) Every employee shall be entitled to a salary equal to at least the minimum wage paid by the employer. (2) From 1 January 2015, the gross minimum wage amounts to € 8.50 per hour per hour. The amount of the minimum wage can be changed by a statutory ordinance of the Federal Government at the suggestion of a permanent commission of the collective bargaining partners (minimum wage commission). (3) The provisions of the Posted Workers Act, the Temporary Employment Act and the ordinances issued on its basis shall be in accordance with the provisions of this Act insofar as the level of the minimum wages determined on the basis thereof does not exceed the minimum wage. The precedence according to sentence 1 applies accordingly to a collective agreement, which is declared universally binding on the basis of § 5 of the Collective Bargaining Act, within the meaning of § 4 (1) (1) and §§ 5 and 6 (2) of the Posted Workers Act.","referanceLink":"http://www.gesetze-im-internet.de/milog/BJNR134810014.html#BJNR134810014BJNG000200000","refering":[""],"createdDate":"2019-06-13T08:29:14.851Z","lawCreatedDate":"1994-06-19","createdby":"5d015b76a9294ed7d423c0e6","predecessor":["5d01b17289509535e09592d6"],"successor":[""],"reason":"minimum wages acts","country":"Germany","imageLink":"","videoLink":"","Active":"Yes"})
+
+
+db.legalLaws.update({_id:ObjectId("5d01b17289509535e09592d6")},{$push:{successor:{new_refe_obj: "5d03260889509535e09592ef"}},Active:"No"})   
+
+
+
+
+
+
+
+
+
+ 
+
+
+db.thread.update({_id:ObjectId("5d029014a5605709c4637946")},{$push:{comments:{_id:"test"}}})
+
+
+db.threads.update({_id:ObjectId("5d01b17289509535e09592d6")},{$push:{comments:{_id: ObjectId(),desc:"thanks for information"}}})    
+
+
